@@ -27,5 +27,6 @@ heavily adapted from [jonaslind/devenv](https://github.com/jonaslind/devenv).
 
 TODOs
 
+- remove the ubuntu user and add my own user?
 - my dotfiles and configs
 - default command should be a useful tmux session

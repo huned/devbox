@@ -52,9 +52,9 @@ RUN apt update && apt upgrade -y && \
 RUN apt-add-repository -y ppa:neovim-ppa/unstable && apt update && \
   apt install -y neovim
 
-# Install deno
+# Install deno into /usr/local
 RUN \
-  curl -fsSL https://deno.land/install.sh | sh
+  curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh
 
 ARG USERID
 ARG GROUPID
