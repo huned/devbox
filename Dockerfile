@@ -13,7 +13,6 @@ RUN apt update && apt upgrade -y && \
   export DEBIAN_FRONTEND="noninteractive" && \
   export TZ="America/Chicago" && \
   apt install -y \
-#  ack \
   bash-completion \
   bat \
   build-essential \
@@ -32,20 +31,12 @@ RUN apt update && apt upgrade -y && \
   libcanberra-gtk-module \
   libcanberra-gtk3-module \
   libglib2.0-bin \
-#  libxml2-dev \
-#  libxslt-dev \
-#  meld \
   mosh \
   net-tools \
   netcat-openbsd \
-#  openjdk-21-jdk \
-#  openjdk-21-source \
   podman \
   python3 \
-#  python3-dev \
   python3-pip \
-#  python3-tk \
-#  ruby-full \
   silversearcher-ag \
   software-properties-common \
   sudo \
@@ -58,117 +49,12 @@ RUN apt update && apt upgrade -y && \
   zlib1g-dev
 
 # Install neovim from ppa:neovim/unstable
-#RUN apt-add-repository -y ppa:neovim-ppa/unstable && apt update && \
-#  apt install -y neovim
+RUN apt-add-repository -y ppa:neovim-ppa/unstable && apt update && \
+  apt install -y neovim
 
 # Install deno
-#RUN \
-#  curl -fsSL https://deno.land/install.sh | sh
-
-# Make podman use remote by default.
-# This is much easier to achieve by using the CONTAINER_HOST environment variable on more modern versions of podman.
-#RUN \
-#  mv /usr/bin/podman /usr/bin/podman-local && \
-#  echo -e '#!/bin/bash\npodman-local --remote "$@"\nexit $?' > /usr/bin/podman && \
-#  chmod 755 /usr/bin/podman
-
-# Make sure we're using the latest pip
-#RUN \
-#  pip install --upgrade pip wheel setuptools Cython
-
-# Yq is not published in any apt repo that I trust, so let's take it directly from github.
-#
-# I'm locking down the specific version and verifying the binary's sha512 sum to protect against supply chain attacks.
-# Obviously, when we upgrade yq version we need to update the checksum too.
-#
-# If the sha512 checksum mismatches then the RUN process will fail. But note how the tar command inside the process
-# substitution is asynchronous and may fail without that error propagating to the parent process. In that case we're
-# saved by the mv command which WILL fail if the tar command didn't manage to extract the file.
-#RUN \
-#  cd /usr/bin && \
-#  curl -L https://github.com/mikefarah/yq/releases/download/v4.44.1/yq_linux_amd64.tar.gz | \
-#    tee >(tar xz --no-same-owner -f- ./yq_linux_amd64) | \
-#    sha512sum -c <(echo "e38c2398445624e3d5b1f854fe805bd575723d0b35bfcf8c0f52749a9abddfcbbbf5ba5ba251a2623987c4be329877ad4bafb9a1e0e312bcf6cc45405741ae5c -") && \
-#  mv yq_linux_amd64 yq
-
-# Maven
-#
-# See above for detailed explanation about what's going on here. Here the cd command will save us in case the
-# substituted process fails.
-#
-#RUN \
-#  cd /opt && \
-#  curl -L https://dlcdn.apache.org/maven/maven-3/3.9.7/binaries/apache-maven-3.9.7-bin.tar.gz | \
-#    tee >(tar xz --no-same-owner -f-) | \
-#    sha512sum -c <(echo "f64913f89756264f2686e241f3f4486eca5d0dfdbb97077b0efc389cad376053824d58caa35c39648453ca58639f85335f9be9c8f217bfdb0c2d5ff2a9428fac -") && \
-#  cd apache-maven-* && \
-#  MAVENHOME=$(pwd) && \
-#  cd /usr/bin && \
-#  ln -s ${MAVENHOME}/bin/mvn mvn
-
-# Eclipse
-#
-# See above for detailed explanation about what's going on here. Here the cd command will save us in case the
-# substituted process fails.
-# 
-#RUN \
-#  cd /opt && \
-#  curl -L https://ftp.acc.umu.se/mirror/eclipse.org/technology/epp/downloads/release/2024-03/R/eclipse-jee-2024-03-R-linux-gtk-x86_64.tar.gz | \
-#    tee >(tar xz --no-same-owner -f-) | \
-#    sha512sum -c <(echo "d674d5eb95c4836440463a89dc8f849e45057d2f89e7b698c48f342c82e169d1ab6dc2c697654474c3ecd5625d04a593db3c1e06984d3596db1e86cabad1eb2f -") && \
-#  cd eclipse* && \
-#  ECLIPSEHOME=$(pwd) && \
-#  cd /usr/bin && \
-#  ln -s ${ECLIPSEHOME}/eclipse eclipse && \
-#  echo '-Dorg.eclipse.oomph.setup.donate=false' >> /opt/eclipse/eclipse.ini
-
-# Protobuf compiler
-#RUN \
-#  cd /usr/bin && \
-#  curl -L https://github.com/protocolbuffers/protobuf/releases/download/v25.1/protoc-25.1-linux-x86_64.zip --output protoc.zip && \
-#  sha512sum -c <(echo "75da030a2c9fb3ccd689a2beaeab42d44803b314410f6578c7af030d1ac29d3de1260a4fb50eca5c8efbcd1ac4a94b4a130e45afebf8a182d6c1d3241a2f8dba protoc.zip") && \
-#  unzip -p protoc.zip bin/protoc > protoc && \
-#  chmod 755 protoc && \
-#  rm protoc.zip
-
-# Node.js
-#RUN \
-#  cd /opt && \
-#  curl -L https://nodejs.org/dist/v20.13.1/node-v20.13.1-linux-x64.tar.gz | \
-#    tee >(tar xz --no-same-owner -f-) | \
-#    sha256sum -c <(echo "80b978a9fe544b1892e73a4bf89e0b3792b1d459b621874efdc2ddd2270c03fe -") && \
-#  cd node-* && \
-#  NODEHOME=$(pwd) && \
-#  cd /usr/bin && \
-#  ln -s ${NODEHOME}/bin/corepack corepack && \
-#  ln -s ${NODEHOME}/bin/node node && \
-#  ln -s ${NODEHOME}/bin/npm npm && \
-#  ln -s ${NODEHOME}/bin/npx npx
-
-# AWS CLI
-#RUN \
-#  mkdir /tmp/aws-cli-install
-#COPY aws-cli-pgp-key.pub /tmp/aws-cli-install/aws-cli-pgp-key.pub
-#RUN \
-#  cd /tmp/aws-cli-install && \
-#  gpg --import aws-cli-pgp-key.pub && \
-#  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-#  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig" -o "awscliv2.sig" && \
-#  gpg --verify awscliv2.sig awscliv2.zip && \
-#  unzip awscliv2.zip && \
-#  ./aws/install && \
-#  cd / && \
-#  rm -rf /tmp/aws-cli-install
-
-# Java Preferences Utility
-#RUN \
-#  mkdir /opt/javaprefs && \
-#  chmod 755 /opt/javaprefs
-#COPY javauserprefadd /opt/javaprefs/.
-#RUN \
-#  chmod 755 /opt/javaprefs/javauserprefadd && \
-#  cd /usr/bin && \
-#  ln -s /opt/javaprefs/javauserprefadd javauserprefadd
+RUN \
+  curl -fsSL https://deno.land/install.sh | sh
 
 ARG USERID
 ARG GROUPID
@@ -181,44 +67,6 @@ ARG USERNAME
 #  chown -R $USERNAME:$USERNAME /home/$USERNAME
 
 USER $USERNAME
-
-# JMeter and Custom Thread Groups plugin
-# Must be installed as user, not root, otherwise plugin manager won't work with Taurus.
-#RUN \
-#  mkdir -p $HOME/.local/bin && \
-#  cd $HOME/.local && \
-#  curl -L https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz | \
-#    tee >(tar xz --no-same-owner -f-) | \
-#    sha512sum -c <(echo "5978a1a35edb5a7d428e270564ff49d2b1b257a65e17a759d259a9283fc17093e522fe46f474a043864aea6910683486340706d745fcdf3db1505fd71e689083 -") && \
-#  cd apache-jmeter-* && \
-#  JMETERHOME=$(pwd) && \
-#  cd $HOME/.local/bin && \
-#  ln -s ${JMETERHOME}/bin/jmeter jmeter && \
-#  cd ${JMETERHOME}/lib/ext && \
-#  curl -L https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager/1.10/jmeter-plugins-manager-1.10.jar --output jmeter-plugins-manager-1.10.jar && \
-#  sha512sum -c <(echo "38af806a7c78473c032ba93c7a2e522674871f01616985a0b0522483977d58afdc444d18bd5590b8036c344ccf11d2fe61be807501d5edb6d4bdebc9050c43ae jmeter-plugins-manager-1.10.jar") && \
-#  cd ${JMETERHOME}/lib && \
-#  curl -L https://repo1.maven.org/maven2/kg/apc/cmdrunner/2.3/cmdrunner-2.3.jar --output cmdrunner-2.3.jar && \
-#  sha512sum -c <(echo "7f71fe42f4ead4ccddd68148e97a46b9262bdb05fe5e590a725331513549122dc64d4cb524635b2f0e3e7d3ee4bb3c2807738cd3c7e2d0d7a503ea78234dab51 cmdrunner-2.3.jar") && \
-#  java -cp ${JMETERHOME}/lib/ext/jmeter-plugins-manager-1.10.jar org.jmeterplugins.repository.PluginManagerCMDInstaller && \
-#  ${JMETERHOME}/bin/PluginsManagerCMD.sh install jpgc-casutg=2.10
-
-# Use JMeter's SolarizedDarkTheme
-#RUN \
-#  javauserprefadd "/org/apache/jmeter/gui/action" "laf.command" "com.github.weisj.darklaf.DarkLaf:com.github.weisj.darklaf.theme.SolarizedDarkTheme"
-
-# Taurus
-#RUN \
-#  pip install bzt
-
-# Taurus settings
-# Taurus doesn't handle symlinks to jmeter well, so we need to specify the real path to jmeter
-#RUN \
-#  touch ~/.bzt-rc && \
-#  chmod 600 ~/.bzt-rc && \
-#  echo $'modules:\n\
-#  jmeter:\n\
-#    path: '$(readlink -f $HOME/.local/bin/jmeter)$'\n' >> ~/.bzt-rc
 
 # Suppress sudo warning when starting terminal
 RUN \
@@ -254,73 +102,14 @@ RUN \
 RUN \
   podman system connection add host unix:///run/user/1000/podman/podman.sock
 
-# Jekyll
-#RUN \
-#  export GEM_HOME="/home/$USERNAME/gems" && \
-#  gem install jekyll bundler
-
-#ARG BASHRC
-
-# Nice .bashrc and .profile
-#RUN \
-#  touch ~/.bashrc && \
-#  chmod 700 ~/.bashrc && \
-#  echo 'export SHELL="/bin/bash"' >> ~/.bashrc && \
-#  echo 'eval `dircolors /home/'$USERNAME'/.dir_colors/dircolors`' >> ~/.profile && \
-#  echo 'export CHEESE_WEDGE=$(echo -e '"'"'\U1f9c0'"'"')' >> ~/.bashrc && \
-#  echo 'export COW_FACE=$(echo -e '"'"'\U1f42e'"'"')' >> ~/.bashrc && \
-#  echo 'export SPIRAL_SHELL=$(echo -e '"'"'\U1f41a'"'"')' >> ~/.bashrc && \
-#  echo 'export WEBKIT_DISABLE_COMPOSITING_MODE=1' >> ~/.bashrc  && \
-#  echo 'export TZ="Europe/Stockholm"' >> ~/.bashrc  && \
-#  echo 'export GEM_HOME="$HOME/gems"' >> ~/.bashrc && \
-#  echo 'export PATH="$HOME/.local/bin:$HOME/gems/bin:$PATH"' >> ~/.bashrc && \
-#  echo 'export SSH_AUTH_SOCK=/run/user/'$USERID'/keyring/ssh' >> ~/.bashrc && \
-#  echo 'PS1='"'"'${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] $CHEESE_WEDGE '"'"'' >> ~/.bashrc && \
-#  echo 'cd $HOME' >> ~/.bashrc && \
-#  echo "$BASHRC" >> ~/.bashrc
-
-#ARG FULLNAME
-#ARG EMAIL
-
-# Git config
-#RUN \
-#  git config --global user.name "$FULLNAME" && \
-#  git config --global user.email "$EMAIL"
-
 # Mount points
 RUN \
-  mkdir ~/Downloads && \
-  chmod 755 ~/Downloads && \
   mkdir ~/.ssh && \
   chmod 700 ~/.ssh && \
-#  mkdir ~/.m2 && \
-#  chmod 700 ~/.m2 && \
-#  mkdir ~/.m2/repository && \
-#  chmod 700 ~/.m2/repository && \
-#  mkdir ~/.eclipse && \
-#  chmod 700 ~/.eclipse && \
-#  mkdir ~/eclipse-workspace && \
-#  chmod 700 ~/eclipse-workspace && \
-#  mkdir ~/source && \
-#  chmod 700 ~/source && \
-#  mkdir ~/.aws && \
-#  chmod 700 ~/.aws
+  mkdir ~/Downloads && \
+  chmod 755 ~/Downloads && \
   mkdir ~/work && \
-  chmod 700 ~/work
-
-# Eclipse preferences
-#RUN \
-#  mkdir -p                                            ~/eclipse-workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/
-#COPY org.eclipse.ui.workbench.prefs     /home/$USERNAME/eclipse-workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.workbench.prefs
-#COPY org.eclipse.ui.ide.prefs.workspace /home/$USERNAME/eclipse-workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.ide.prefs
-#COPY org.eclipse.jdt.ui.prefs           /home/$USERNAME/eclipse-workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.ui.prefs
-#COPY org.eclipse.ui.editors.prefs       /home/$USERNAME/eclipse-workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.editors.prefs
-#COPY org.eclipse.wst.xml.core.prefs     /home/$USERNAME/eclipse-workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.wst.xml.core.prefs
-#RUN \
-#  mkdir -p                                            ~/.eclipse/org.eclipse.platform_4.31.0_1473617060_linux_gtk_x86_64/configuration/.settings/
-#COPY org.eclipse.ui.ide.prefs           /home/$USERNAME/.eclipse/org.eclipse.platform_4.31.0_1473617060_linux_gtk_x86_64/configuration/.settings/org.eclipse.ui.ide.prefs
-#RUN \
-#  sed -i "s/%username%/$USERNAME/"      /home/$USERNAME/.eclipse/org.eclipse.platform_4.31.0_1473617060_linux_gtk_x86_64/configuration/.settings/org.eclipse.ui.ide.prefs
+  chmod 755 ~/work
 
 # Prevent gnome-terminal from looking for accessibility tools
 ENV NO_AT_BRIDGE=1

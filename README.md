@@ -18,8 +18,14 @@ development environment in a podman container
       --network host \
       --hostname devbox.local \
       --name devbox \
+      --volume /home/$USER/.ssh:/home/ubuntu/.ssh:z
       --volume /home/$USER/work:/home/ubuntu/work:z
       --volume /home/$USER/Downloads:/home/ubuntu/Downloads:z
       devbox
 
 heavily adapted from [jonaslind/devenv](https://github.com/jonaslind/devenv).
+
+TODOs
+
+- my dotfiles and configs
+- default command should be a useful tmux session
