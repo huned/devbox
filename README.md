@@ -1,12 +1,19 @@
-development environment in a podman container
+## Overview
+
+A development environment in a podman container. Heavily adapted from
+[jonaslind/devenv](https://github.com/jonaslind/devenv).
+
+## Usage
+
+On the host machine:
 
     # build container
     podman build \
       --tag devbox \
       --format docker \
+      --volume /home/$USER/.ssh:/home/ubuntu/.ssh:ro \
       --build-arg USERID="$(id -u)" \
       --build-arg GROUPID="$(id -g)" \
-      --build-arg USERNAME="$USER" \
       .
 
     # allow local connections to host's X server
@@ -25,9 +32,12 @@ development environment in a podman container
       --volume /home/$USER/Downloads:/home/ubuntu/Downloads:ro \
       devbox
 
-heavily adapted from [jonaslind/devenv](https://github.com/jonaslind/devenv).
+Once you see the gnome-terminal for the container:
 
-TODOs
+    cd && tmux
 
-- my dotfiles and configs
-- default command should be a useful tmux session
+Then, get to work.
+
+## TODOs
+
+- map ports to host (ie, podman run --publish 3000-8999:3000-8999 ...)

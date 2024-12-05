@@ -22,6 +22,7 @@ RUN apt update && apt upgrade -y && \
   dbus-x11 \
   file \
   fonts-noto \
+  gettext \
   git \
   gitk \
   gnome-icon-theme \
@@ -56,9 +57,9 @@ RUN apt-add-repository -y ppa:neovim-ppa/unstable && apt update && \
 RUN \
   curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh
 
-ARG USERID
-ARG GROUPID
-ARG USERNAME
+#ARG USERID
+#ARG GROUPID
+#ARG USERNAME
 
 # Create the user
 #RUN \
@@ -66,7 +67,7 @@ ARG USERNAME
 #  useradd -u $USERID -g $GROUPID --create-home --home-dir /home/$USERNAME -s /bin/bash $USERNAME && \
 #  chown -R $USERNAME:$USERNAME /home/$USERNAME
 
-USER $USERNAME
+USER ubuntu
 
 # Suppress sudo warning when starting terminal
 RUN \
@@ -99,19 +100,39 @@ RUN \
   rm -rf dircolors-solarized
 
 # Make podman connect to the podman running on the host by default
-RUN \
-  podman system connection add host unix:///run/user/1000/podman/podman.sock
+#RUN \
+#  podman system connection add host unix:///run/user/1000/podman/podman.sock
 
 # Mount points
 RUN \
-  mkdir ~/.ssh && \
-  chmod 700 ~/.ssh && \
+#  mkdir -p ~/.ssh && \
+#  chmod 700 ~/.ssh && \
   mkdir ~/Downloads && \
   chmod 755 ~/Downloads && \
   mkdir ~/work && \
   chmod 755 ~/work
 
+# Install various dotfiles and configurations
+RUN \
+  cd ~/.config && \
+  git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
+  git reset --hard c5f35364a7cd27bca81138b9409bbe350725c444 && \
+  git submodule init && git submodule update && \
+  mkdir -p ~/.config/nvim && ln -sr .config/nvim/init.vim ~/.config/nvim/init.vim && \
+  mkdir -p ~/.local/share/nvim/site/pack/$USER && ln -sr .local/share/nvim/site/pack/huned ~/.local/share/nvim/site/pack/$USER && \
+  ln -fsr .bashrc ~/.bashrc && \
+  ln -sr .toprc ~/.toprc && \
+  ln -sr .gitconfig ~/.gitconfig && \
+  ln -sr .sqliterc ~/.sqliterc
+
+# Install Oh my tmux!
+RUN \
+  cd ~ && git clone https://github.com/gpakosz/.tmux.git && cd .tmux && \
+  git reset --hard 4cb811769abe8a2398c7c68c8e9f00e87bad4035 && \
+  ln -fsr .tmux.conf ~/.tmux.conf && \
+  cp .tmux.conf.local ~/.tmux.conf.local
+
 # Prevent gnome-terminal from looking for accessibility tools
 ENV NO_AT_BRIDGE=1
 
-CMD ["gnome-terminal", "--disable-factory"]
+CMD ["gnome-terminal", "--disable-factory", "--working-directory=~"]
