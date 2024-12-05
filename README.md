@@ -14,19 +14,20 @@ development environment in a podman container
 
     # run container, which starts a gnome-terminal from the container
     podman run \
-      --detach \
+      --replace \
       --network host \
       --hostname devbox.local \
       --name devbox \
-      --volume /home/$USER/.ssh:/home/ubuntu/.ssh:z
-      --volume /home/$USER/work:/home/ubuntu/work:z
-      --volume /home/$USER/Downloads:/home/ubuntu/Downloads:z
+      --userns keep-id \
+      --env DISPLAY=:0 \
+      --volume /home/$USER/.ssh:/home/ubuntu/.ssh:ro \
+      --volume /home/$USER/work:/home/ubuntu/work:z \
+      --volume /home/$USER/Downloads:/home/ubuntu/Downloads:ro \
       devbox
 
 heavily adapted from [jonaslind/devenv](https://github.com/jonaslind/devenv).
 
 TODOs
 
-- remove the ubuntu user and add my own user?
 - my dotfiles and configs
 - default command should be a useful tmux session
