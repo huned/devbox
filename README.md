@@ -9,8 +9,8 @@ development environment in a podman container
       --build-arg USERNAME="$USER" \
       .
 
-    # allow all connections to host's X/Wayland
-    xhost +
+    # allow local connections to host's X server
+    xhost +local:
 
     # run container, which starts a gnome-terminal from the container
     podman run \
