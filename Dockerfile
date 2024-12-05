@@ -67,6 +67,7 @@ RUN \
 #  useradd -u $USERID -g $GROUPID --create-home --home-dir /home/$USERNAME -s /bin/bash $USERNAME && \
 #  chown -R $USERNAME:$USERNAME /home/$USERNAME
 
+#USER $USERNAME
 USER ubuntu
 
 # Suppress sudo warning when starting terminal
@@ -105,8 +106,6 @@ RUN \
 
 # Mount points
 RUN \
-#  mkdir -p ~/.ssh && \
-#  chmod 700 ~/.ssh && \
   mkdir ~/Downloads && \
   chmod 755 ~/Downloads && \
   mkdir ~/work && \

@@ -34,7 +34,7 @@ On the host machine:
 
 Once you see the gnome-terminal for the container:
 
-    cd && tmux
+    tmux
 
 Then, get to work.
 
