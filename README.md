@@ -21,22 +21,23 @@ On the host machine:
 
     # run container, which starts a gnome-terminal from the container
     podman run \
-      --replace \
       --network host \
       --hostname devbox.local \
       --name devbox \
       --userns keep-id \
-      --env DISPLAY=:0 \
       --volume /home/$USER/.ssh:/home/ubuntu/.ssh:ro \
       --volume /home/$USER/work:/home/ubuntu/work:z \
       --volume /home/$USER/Downloads:/home/ubuntu/Downloads:ro \
-      devbox
+      --interactive --tty \
+      devbox /bin/bash
 
-Once you see the gnome-terminal for the container:
+Once you see the container's shell:
 
     tmux
 
 Then, get to work.
+
+To detach from the container (while leaving it running): `CTRL-P, CTRL-Q`
 
 ## TODOs
 
