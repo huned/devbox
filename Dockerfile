@@ -35,6 +35,7 @@ RUN apt update && apt upgrade -y && \
   mosh \
   net-tools \
   netcat-openbsd \
+  openssh-server \
   podman \
   python3 \
   python3-pip \
@@ -66,6 +67,9 @@ RUN \
 #  groupadd -g $GROUPID $USERNAME && \
 #  useradd -u $USERID -g $GROUPID --create-home --home-dir /home/$USERNAME -s /bin/bash $USERNAME && \
 #  chown -R $USERNAME:$USERNAME /home/$USERNAME
+
+RUN \
+  echo "ubuntu:ubuntu" | chpasswd
 
 #USER $USERNAME
 USER ubuntu
