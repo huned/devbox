@@ -74,6 +74,8 @@ RUN \
 #USER $USERNAME
 USER ubuntu
 
+WORKDIR /home/ubuntu
+
 # Suppress sudo warning when starting terminal
 RUN \
   touch ~/.sudo_as_admin_successful
@@ -136,6 +138,6 @@ RUN \
   cp .tmux.conf.local ~/.tmux.conf.local
 
 # Prevent gnome-terminal from looking for accessibility tools
-ENV NO_AT_BRIDGE=1
+#ENV NO_AT_BRIDGE=1
 
-CMD ["gnome-terminal", "--disable-factory", "--working-directory=~"]
+#CMD ["gnome-terminal", "--disable-factory", "--working-directory=~"]
