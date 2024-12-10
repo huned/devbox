@@ -33,12 +33,13 @@ On the host machine:
 
 Once you see the container's shell:
 
-    tmux
+    tmux -2
 
 Then, get to work.
 
 To detach from the container (while leaving it running): `CTRL-P, CTRL-Q`
 
-## TODOs
+## TODO
 
-- map ports to host (ie, podman run --publish 3000-8999:3000-8999 ...)
+- [ ] pre-packaged tmux layout
+- [ ] update /etc/hosts so devbox.local resolves to 127.0.0.1

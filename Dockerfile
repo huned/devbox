@@ -47,6 +47,8 @@ RUN apt update && apt upgrade -y && \
   tmux \
   unzip \
   vim \
+  w3m \
+  w3m-img \
   wget \
   x11-apps \
   xwayland-run \
@@ -59,6 +61,10 @@ RUN apt-add-repository -y ppa:neovim-ppa/unstable && apt update && \
 # Install deno into /usr/local
 RUN \
   curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh
+
+# Install ollama into /usr/local
+RUN \
+  curl -fsSL https://ollama.com/install.sh | sh
 
 #ARG USERID
 #ARG GROUPID
@@ -83,9 +89,9 @@ RUN \
   touch ~/.sudo_as_admin_successful
 
 # Beautiful default monospace font and no menubar in the terminal
-RUN \
-  dbus-launch gsettings set org.gnome.desktop.interface monospace-font-name "'DejaVu Sans Mono 14'" && \
-  dbus-launch gsettings set org.gnome.Terminal.Legacy.Settings default-show-menubar false
+#RUN \
+#  dbus-launch gsettings set org.gnome.desktop.interface monospace-font-name "'DejaVu Sans Mono 14'" && \
+#  dbus-launch gsettings set org.gnome.Terminal.Legacy.Settings default-show-menubar false
 
 # Solarized color theme
 #
@@ -121,7 +127,7 @@ RUN \
 
 # Install various dotfiles and configurations
 RUN \
-  cd ~/.config && \
+  mkdir -p ~/.config && cd ~/.config && \
   git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
   git reset --hard c5f35364a7cd27bca81138b9409bbe350725c444 && \
   git submodule init && git submodule update && \
@@ -139,9 +145,11 @@ RUN \
   ln -fsr .tmux.conf ~/.tmux.conf && \
   cp .tmux.conf.local ~/.tmux.conf.local
 
-ENV TERM=xterm-256color
-ENV COLORTERM=truecolor
-CMD ["bash"]
+RUN \
+  echo "export TERM=xterm-256color" >> ~/.bashrc && \
+  echo "export COLORTERM=truecolor" >> ~/.bashrc
+
+CMD ["/bin/bash"]
 
 # Prevent gnome-terminal from looking for accessibility tools
 #ENV NO_AT_BRIDGE=1
