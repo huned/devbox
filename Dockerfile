@@ -42,6 +42,7 @@ RUN apt update && apt upgrade -y && \
   python3-pip \
   silversearcher-ag \
   software-properties-common \
+  sqlite3 \
   sudo \
   tmux \
   unzip \
