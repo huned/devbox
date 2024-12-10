@@ -33,6 +33,7 @@ RUN apt update && apt upgrade -y && \
   libcanberra-gtk3-module \
   libglib2.0-bin \
   mosh \
+  ncurses-term \
   net-tools \
   netcat-openbsd \
   openssh-server \
@@ -90,21 +91,21 @@ RUN \
 # I'm checking out a specific gitsha of the gnome-terminal-colors-solarized repo to protect against supply chain
 # attacks. Likewise, I'm downloading a specific gitsha of dircolors-solarized to be sure what I'm getting.
 #
-RUN \
-  cd /tmp && \
-  git clone https://github.com/aruhier/gnome-terminal-colors-solarized.git && \
-  cd gnome-terminal-colors-solarized && \
-  git reset --hard 9651c41df0f89e87feee0c798779abba0f9395e0 && \
-  dbus-launch ./install.sh --skip-dircolors -s light -p $(gsettings get org.gnome.Terminal.ProfilesList list | sed "s/.*'\([^']\{1,\}\)'.*/\1/") && \
-  cd /tmp && \
-  rm -rf /tmp/gnome-terminal-colors-solarized && \
-  mkdir ~/.dir_colors && \
-  chmod 700 ~/.dir_colors && \
-  mkdir dircolors-solarized && \
-  cd dircolors-solarized && \
-  curl -L https://raw.github.com/seebi/dircolors-solarized/664dd4e91ff9600a8e8640ef59bc45dd7c86f18f/dircolors.ansi-light >> ~/.dir_colors/dircolors && \
-  cd /tmp && \
-  rm -rf dircolors-solarized
+#RUN \
+#  cd /tmp && \
+#  git clone https://github.com/aruhier/gnome-terminal-colors-solarized.git && \
+#  cd gnome-terminal-colors-solarized && \
+#  git reset --hard 9651c41df0f89e87feee0c798779abba0f9395e0 && \
+#  dbus-launch ./install.sh --skip-dircolors -s light -p $(gsettings get org.gnome.Terminal.ProfilesList list | sed "s/.*'\([^']\{1,\}\)'.*/\1/") && \
+#  cd /tmp && \
+#  rm -rf /tmp/gnome-terminal-colors-solarized && \
+#  mkdir ~/.dir_colors && \
+#  chmod 700 ~/.dir_colors && \
+#  mkdir dircolors-solarized && \
+#  cd dircolors-solarized && \
+#  curl -L https://raw.github.com/seebi/dircolors-solarized/664dd4e91ff9600a8e8640ef59bc45dd7c86f18f/dircolors.ansi-light >> ~/.dir_colors/dircolors && \
+#  cd /tmp && \
+#  rm -rf dircolors-solarized
 
 # Make podman connect to the podman running on the host by default
 #RUN \
@@ -136,6 +137,10 @@ RUN \
   git reset --hard 4cb811769abe8a2398c7c68c8e9f00e87bad4035 && \
   ln -fsr .tmux.conf ~/.tmux.conf && \
   cp .tmux.conf.local ~/.tmux.conf.local
+
+ENV TERM=xterm-256color
+ENV COLORTERM=truecolor
+CMD ["bash"]
 
 # Prevent gnome-terminal from looking for accessibility tools
 #ENV NO_AT_BRIDGE=1
