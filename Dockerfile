@@ -38,6 +38,7 @@ RUN apt update && apt upgrade -y && \
   netcat-openbsd \
   openssh-server \
   podman \
+  poppler-utils \
   python3 \
   python3-pip \
   silversearcher-ag \
