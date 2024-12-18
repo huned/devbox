@@ -67,18 +67,11 @@ RUN \
 RUN \
   curl -fsSL https://ollama.com/install.sh | sh
 
-#ARG USERID
-#ARG GROUPID
-#ARG USERNAME
-
-# Create the user
-#RUN \
-#  groupadd -g $GROUPID $USERNAME && \
-#  useradd -u $USERID -g $GROUPID --create-home --home-dir /home/$USERNAME -s /bin/bash $USERNAME && \
-#  chown -R $USERNAME:$USERNAME /home/$USERNAME
-
 RUN \
   echo "ubuntu:ubuntu" | chpasswd
+
+RUN \
+  echo "127.0.0.1 devbox devbox.local" >> /etc/hosts
 
 #USER $USERNAME
 USER ubuntu
@@ -88,36 +81,6 @@ WORKDIR /home/ubuntu
 # Suppress sudo warning when starting terminal
 RUN \
   touch ~/.sudo_as_admin_successful
-
-# Beautiful default monospace font and no menubar in the terminal
-#RUN \
-#  dbus-launch gsettings set org.gnome.desktop.interface monospace-font-name "'DejaVu Sans Mono 14'" && \
-#  dbus-launch gsettings set org.gnome.Terminal.Legacy.Settings default-show-menubar false
-
-# Solarized color theme
-#
-# I'm checking out a specific gitsha of the gnome-terminal-colors-solarized repo to protect against supply chain
-# attacks. Likewise, I'm downloading a specific gitsha of dircolors-solarized to be sure what I'm getting.
-#
-#RUN \
-#  cd /tmp && \
-#  git clone https://github.com/aruhier/gnome-terminal-colors-solarized.git && \
-#  cd gnome-terminal-colors-solarized && \
-#  git reset --hard 9651c41df0f89e87feee0c798779abba0f9395e0 && \
-#  dbus-launch ./install.sh --skip-dircolors -s light -p $(gsettings get org.gnome.Terminal.ProfilesList list | sed "s/.*'\([^']\{1,\}\)'.*/\1/") && \
-#  cd /tmp && \
-#  rm -rf /tmp/gnome-terminal-colors-solarized && \
-#  mkdir ~/.dir_colors && \
-#  chmod 700 ~/.dir_colors && \
-#  mkdir dircolors-solarized && \
-#  cd dircolors-solarized && \
-#  curl -L https://raw.github.com/seebi/dircolors-solarized/664dd4e91ff9600a8e8640ef59bc45dd7c86f18f/dircolors.ansi-light >> ~/.dir_colors/dircolors && \
-#  cd /tmp && \
-#  rm -rf dircolors-solarized
-
-# Make podman connect to the podman running on the host by default
-#RUN \
-#  podman system connection add host unix:///run/user/1000/podman/podman.sock
 
 # Mount points
 RUN \
@@ -130,10 +93,10 @@ RUN \
 RUN \
   mkdir -p ~/.config && cd ~/.config && \
   git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
-  git reset --hard d5e44ec4509380a1f53b84c297077e509fb4fcb9 && \
+  git reset --hard 0880f633a4263e4847ad4fa9d4058d74482bce4c && \
   git submodule init && git submodule update && \
   ln -fsr .config/nvim ~/.config/nvim && \
-  mkdir -p ~/.local/share/nvim/site/pack/$USER && ln -sr .local/share/nvim/site/pack/huned ~/.local/share/nvim/site/pack/$USER && \
+  mkdir -p ~/.local/share && ln -fsr .local/share/nvim ~/.local/share/nvim && \
   ln -fsr .bashrc ~/.bashrc && \
   ln -sr .toprc ~/.toprc && \
   ln -sr .gitconfig ~/.gitconfig && \
@@ -151,8 +114,3 @@ RUN \
   echo "export COLORTERM=truecolor" >> ~/.bashrc
 
 CMD ["/bin/bash"]
-
-# Prevent gnome-terminal from looking for accessibility tools
-#ENV NO_AT_BRIDGE=1
-
-#CMD ["gnome-terminal", "--disable-factory", "--working-directory=~"]
