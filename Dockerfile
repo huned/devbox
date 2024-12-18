@@ -93,7 +93,7 @@ RUN \
 RUN \
   mkdir -p ~/.config && cd ~/.config && \
   git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
-  git reset --hard 0880f633a4263e4847ad4fa9d4058d74482bce4c && \
+  git reset --hard bd4f7ed451fdb39c316e9d411718ddc2507c3788 && \
   git submodule init && git submodule update && \
   ln -fsr .config/nvim ~/.config/nvim && \
   mkdir -p ~/.local/share && ln -fsr .local/share/nvim ~/.local/share/nvim && \
