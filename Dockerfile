@@ -130,9 +130,9 @@ RUN \
 RUN \
   mkdir -p ~/.config && cd ~/.config && \
   git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
-  git reset --hard c5f35364a7cd27bca81138b9409bbe350725c444 && \
+  git reset --hard d5e44ec4509380a1f53b84c297077e509fb4fcb9 && \
   git submodule init && git submodule update && \
-  mkdir -p ~/.config/nvim && ln -sr .config/nvim/init.vim ~/.config/nvim/init.vim && \
+  ln -fsr .config/nvim ~/.config/nvim && \
   mkdir -p ~/.local/share/nvim/site/pack/$USER && ln -sr .local/share/nvim/site/pack/huned ~/.local/share/nvim/site/pack/$USER && \
   ln -fsr .bashrc ~/.bashrc && \
   ln -sr .toprc ~/.toprc && \
