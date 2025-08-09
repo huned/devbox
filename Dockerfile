@@ -1,4 +1,4 @@
-FROM ubuntu:noble
+FROM ubuntu:latest
 
 # Use bash instead of sh to be able to use process substitution in RUN commands.
 SHELL ["/bin/bash", "-c"]
@@ -17,6 +17,7 @@ RUN apt update && apt upgrade -y && \
   bat \
   build-essential \
   bzip2 \
+  caddy \
   curl \
   dconf-cli \
   dbus-x11 \
@@ -65,13 +66,21 @@ RUN \
 
 # Install ollama into /usr/local
 RUN \
-  curl -fsSL https://ollama.com/install.sh | sh
+  curl -fsSL https://ollama.com/install.sh | sh && \
+  ollama -v
 
+# Install models into ollama
+#RUN \
+#  ollama pull qwen3:4b && \
+#  ollama pull nomic-embed-text
+
+# Change ubuntu user's password
 RUN \
   echo "ubuntu:ubuntu" | chpasswd
 
+# Ensure `devbox` and `devbox.local` resolve to 127.0.0.1
 RUN \
-  echo "127.0.0.1 devbox devbox.local" >> /etc/hosts
+  echo "127.0.0.1 localhost devbox devbox.local" >> /etc/hosts
 
 #USER $USERNAME
 USER ubuntu
@@ -82,7 +91,7 @@ WORKDIR /home/ubuntu
 RUN \
   touch ~/.sudo_as_admin_successful
 
-# Mount points
+# Mount points to allow host directory access inside the container
 RUN \
   mkdir ~/Downloads && \
   chmod 755 ~/Downloads && \
@@ -93,24 +102,15 @@ RUN \
 RUN \
   mkdir -p ~/.config && cd ~/.config && \
   git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
-  git reset --hard bd4f7ed451fdb39c316e9d411718ddc2507c3788 && \
+  # Protect against supply chain attack by specifying a known good hash
+  git reset --hard 7748cec && \
   git submodule init && git submodule update && \
   ln -fsr .config/nvim ~/.config/nvim && \
   mkdir -p ~/.local/share && ln -fsr .local/share/nvim ~/.local/share/nvim && \
   ln -fsr .bashrc ~/.bashrc && \
   ln -sr .toprc ~/.toprc && \
   ln -sr .gitconfig ~/.gitconfig && \
-  ln -sr .sqliterc ~/.sqliterc
-
-# Install Oh my tmux!
-RUN \
-  cd ~ && git clone https://github.com/gpakosz/.tmux.git && cd .tmux && \
-  git reset --hard 4cb811769abe8a2398c7c68c8e9f00e87bad4035 && \
-  ln -fsr .tmux.conf ~/.tmux.conf && \
-  cp .tmux.conf.local ~/.tmux.conf.local
-
-RUN \
-  echo "export TERM=xterm-256color" >> ~/.bashrc && \
-  echo "export COLORTERM=truecolor" >> ~/.bashrc
+  ln -sr .sqliterc ~/.sqliterc && \
+  ln -sr .tmux.conf ~/.tmux.conf
 
 CMD ["/bin/bash"]
