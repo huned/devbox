@@ -33,7 +33,7 @@ On the host machine:
 
 Once you see the container's shell:
 
-    tmux -2
+    tmux -2u
 
 Then, get to work.
 
@@ -41,5 +41,4 @@ To detach from the container (while leaving it running): `CTRL-P, CTRL-Q`
 
 ## TODO
 
-- [ ] pre-packaged tmux layout
-- [ ] update /etc/hosts so devbox.local resolves to 127.0.0.1
+- run `ollama pull qwen3:4b` in Dockerfile
