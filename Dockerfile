@@ -23,6 +23,7 @@ RUN apt update && apt upgrade -y && \
   dbus-x11 \
   file \
   fonts-noto \
+  fzf \
   gettext \
   git \
   gitk \
