@@ -15,6 +15,7 @@ RUN apt update && apt upgrade -y && \
   apt install -y \
   bash-completion \
   bat \
+  btop \
   build-essential \
   bzip2 \
   caddy \
