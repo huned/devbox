@@ -41,4 +41,6 @@ To detach from the container (while leaving it running): `CTRL-P, CTRL-Q`
 
 ## TODO
 
+- timezone?
+- /etc/host doesn't get updated with devbox hostname
 - run `ollama pull qwen3:4b` in Dockerfile
