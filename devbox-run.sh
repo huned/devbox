@@ -1,5 +1,6 @@
 #!/bin/bash
 podman run \
+  --tz=local \
   --network host \
   --hostname devbox.local \
   --name devbox \
