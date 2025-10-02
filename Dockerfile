@@ -27,6 +27,7 @@ RUN apt update && apt upgrade -y && \
   fzf \
   gettext \
   git \
+  git-lfs \
   gitk \
   gnome-icon-theme \
   gnome-terminal \
@@ -48,6 +49,7 @@ RUN apt update && apt upgrade -y && \
   software-properties-common \
   sqlite3 \
   sudo \
+  time \
   tmux \
   tree \
   unzip \
