@@ -92,6 +92,14 @@ USER ubuntu
 
 WORKDIR /home/ubuntu
 
+# Install rust toolchain and cargo
+RUN \
+  curl https://sh.rustup.rs -sSf | sh
+
+# Install uv (python package manager)
+RUN \
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+
 # Suppress sudo warning when starting terminal
 RUN \
   touch ~/.sudo_as_admin_successful
@@ -108,7 +116,7 @@ RUN \
   mkdir -p ~/.config && cd ~/.config && \
   git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
   # Protect against supply chain attack by specifying a known good hash
-  git reset --hard 7748cec && \
+  git reset --hard af3d6ab && \
   git submodule init && git submodule update && \
   ln -fsr .config/nvim ~/.config/nvim && \
   mkdir -p ~/.local/share && ln -fsr .local/share/nvim ~/.local/share/nvim && \
