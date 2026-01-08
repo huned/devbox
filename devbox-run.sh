@@ -5,10 +5,12 @@ podman run \
   --hostname devbox.local \
   --name devbox \
   --userns keep-id \
-  --volume /home/$USER/.ssh:/home/ubuntu/.ssh:ro \
-  --volume /home/$USER/.ollama:/home/ubuntu/.ollama:z \
-  --volume /home/$USER/work:/home/ubuntu/work:z \
-  --volume /home/$USER/Downloads:/home/ubuntu/Downloads:z \
-  --volume /home/$USER/.env.secrets:/home/ubuntu/.env.secrets \
+  --volume ~/Downloads:/home/ubuntu/data:z \
+  --volume ~/.ssh:/home/ubuntu/.ssh:ro \
+  --volume ~/.ollama:/home/ubuntu/.ollama:z \
+  --volume ~/work:/home/ubuntu/work:z \
+  --volume ~/Downloads:/home/ubuntu/Downloads:z \
+  --volume ~/.env.secrets:/home/ubuntu/.env.secrets \
   --interactive --tty --detach \
+  --replace \
   devbox /bin/bash
