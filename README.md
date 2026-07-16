@@ -10,17 +10,14 @@ On the host machine:
     # build container
     podman build --tag devbox --format docker .
 
+    # edit ./devbox-run.sh to update which dirs on your host are available in
+    # the container (see the `--volume` flag).
+
     # run container, which starts an interactive bash session from the container
-    podman run \
-      --network host \
-      --hostname devbox.local \
-      --name devbox \
-      --userns keep-id \
-      --volume /home/$USER/.ssh:/home/ubuntu/.ssh:ro \
-      --volume /home/$USER/work:/home/ubuntu/work:ro \
-      --volume /home/$USER/Downloads:/home/ubuntu/Downloads:ro \
-      --interactive --tty \
-      devbox /bin/bash
+    ./devbox-run.sh
+
+    # attach to the container
+    podman attach -l
 
 Once you see the container's shell:
 
@@ -35,5 +32,10 @@ Later, re-attach with `podman attach -l` to resume working.
 ## TODO
 
 - [ ] bug: why does `--userns keep-id` take forever on run?
+- [ ] wip volumes
+  - [ ] is it OK to expose ~/.ssh to the container? perhaps not if you'll have an
+      untrusted agent running there.
+  - [ ] perhaps ./devbox-run.sh should force users to explicitly set `--volume`
+      flags.
 - [ ] docs for running X/Wayland programs
   - [ ] install jetbrains mono nerd font
