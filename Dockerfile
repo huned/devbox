@@ -32,6 +32,7 @@ RUN apt update && apt upgrade -y && \
   fzf \
   gettext \
   git \
+  git-delta \
   git-lfs \
   gitk \
   #gnome-icon-theme \
