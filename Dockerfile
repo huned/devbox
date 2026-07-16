@@ -3,6 +3,10 @@ FROM ubuntu:latest
 # Use bash instead of sh to be able to use process substitution in RUN commands.
 SHELL ["/bin/bash", "-c"]
 
+# Change ubuntu user's password
+RUN \
+  echo "ubuntu:ubuntu" | chpasswd
+
 # Install software!
 #
 # We're basing this image on ubuntu and I'm trusting the default apt repos.
@@ -21,22 +25,22 @@ RUN apt update && apt upgrade -y && \
   caddy \
   curl \
   dconf-cli \
-  dbus-x11 \
+  #dbus-x11 \
+  fastfetch \
   file \
-  fonts-noto \
+  #fonts-noto \
   fzf \
   gettext \
   git \
   git-lfs \
   gitk \
-  gnome-icon-theme \
-  gnome-terminal \
+  #gnome-icon-theme \
+  #gnome-terminal \
   gpg \
   jq \
-  libcanberra-gtk-module \
-  libcanberra-gtk3-module \
+  #libcanberra-gtk-module \
+  #libcanberra-gtk3-module \
   libglib2.0-bin \
-  mosh \
   ncurses-term \
   net-tools \
   netcat-openbsd \
@@ -45,7 +49,7 @@ RUN apt update && apt upgrade -y && \
   poppler-utils \
   python3 \
   python3-pip \
-  silversearcher-ag \
+  ripgrep \
   software-properties-common \
   sqlite3 \
   sudo \
@@ -57,73 +61,62 @@ RUN apt update && apt upgrade -y && \
   w3m \
   w3m-img \
   wget \
-  x11-apps \
-  xwayland-run \
+  #x11-apps \
+  #xwayland-run \
   zlib1g-dev
 
 # Install neovim from ppa:neovim/unstable
 RUN apt-add-repository -y ppa:neovim-ppa/unstable && apt update && \
   apt install -y neovim
 
-# Install deno into /usr/local
-RUN \
-  curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh
-
-# Install ollama into /usr/local
-RUN \
-  curl -fsSL https://ollama.com/install.sh | sh && \
-  ollama -v
-
-# Install models into ollama
-#RUN \
-#  ollama pull qwen3:4b && \
-#  ollama pull nomic-embed-text
-
-# Change ubuntu user's password
-RUN \
-  echo "ubuntu:ubuntu" | chpasswd
-
-# Ensure `devbox` and `devbox.local` resolve to 127.0.0.1
-RUN \
-  echo "127.0.0.1 localhost devbox devbox.local" >> /etc/hosts
-
 #USER $USERNAME
 USER ubuntu
 
 WORKDIR /home/ubuntu
 
-# Install rust toolchain and cargo
-RUN \
-  curl https://sh.rustup.rs -sSf | sh
-
-# Install uv (python package manager)
-RUN \
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-
 # Suppress sudo warning when starting terminal
 RUN \
   touch ~/.sudo_as_admin_successful
-
-# Mount points to allow host directory access inside the container
-RUN \
-  mkdir ~/Downloads && \
-  chmod 755 ~/Downloads && \
-  mkdir ~/work && \
-  chmod 755 ~/work
 
 # Install various dotfiles and configurations
 RUN \
   mkdir -p ~/.config && cd ~/.config && \
   git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
   # Protect against supply chain attack by specifying a known good hash
-  git reset --hard af3d6ab && \
-  git submodule init && git submodule update && \
-  ln -fsr .config/nvim ~/.config/nvim && \
-  mkdir -p ~/.local/share && ln -fsr .local/share/nvim ~/.local/share/nvim && \
-  ln -fsr .bashrc ~/.bashrc && \
-  ln -sr .toprc ~/.toprc && \
-  ln -sr .gitconfig ~/.gitconfig && \
-  ln -sr .sqliterc ~/.sqliterc && \
-  ln -sr .tmux.conf ~/.tmux.conf
+  git reset --hard 2e775f8 && \
+  ./install.sh
+
+# deno
+RUN \
+  curl -fsSL https://deno.land/install.sh | sh && \
+  echo "export PATH=~/.deno/bin:$PATH" >> ~/.bashrc
+
+# rust
+RUN \
+  curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+  echo "export PATH=~/.cargo/bin:$PATH" >> ~/.bashrc && \
+  echo "source ~/.cargo/env" >> ~/.bashrc
+
+# uv
+RUN \
+  curl -LsSf https://astral.sh/uv/install.sh | sh && \
+  echo "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
+
+# opencode
+RUN \
+  curl -fsSL https://opencode.ai/install | bash
+
+# ollama
+#RUN \
+#  curl -fsSL https://ollama.com/install.sh | sh
+
+# bitwarden
+RUN \
+  cd /tmp && \
+  wget -q https://github.com/bitwarden/clients/releases/download/cli-v2026.6.0/bw-linux-2026.6.0.zip && \
+  echo "392549496c712ab86bfbd6c27302df9fd2c431cfc7a47e26941ac3e3893f4d27 bw-linux-2026.6.0.zip" | sha256sum --check --status && \
+  unzip -q bw-linux-2026.6.0.zip && \
+  mv bw ~/.local/bin && \
+  rm /tmp/bw-linux-2026.6.0.zip
 
 CMD ["/bin/bash"]
