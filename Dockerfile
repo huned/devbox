@@ -42,9 +42,14 @@ RUN apt update && apt upgrade -y && \
   #libcanberra-gtk-module \
   #libcanberra-gtk3-module \
   libglib2.0-bin \
+  manpages \
+  manpages-dev \
   ncurses-term \
   net-tools \
   netcat-openbsd \
+  nodejs \
+  npm \
+  openssh-client \
   openssh-server \
   podman \
   poppler-utils \
@@ -54,6 +59,7 @@ RUN apt update && apt upgrade -y && \
   software-properties-common \
   sqlite3 \
   sudo \
+  tealdeer \
   time \
   tmux \
   tree \
