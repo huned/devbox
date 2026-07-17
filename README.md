@@ -10,7 +10,7 @@ On the host machine:
     # build container
     podman build --tag devbox --format docker .
 
-    # edit ./devbox-run.sh to update which dirs on your host are available in
+    # edit ./devbox-run.sh to add/update --volume flags
     # the container (see the `--volume` flag).
 
     # run container, which starts an interactive bash session from the container
@@ -38,10 +38,5 @@ Later, re-attach with `podman attach -l` to resume working.
 ## TODO
 
 - [ ] bug: why does `--userns keep-id` take forever on run?
-- [ ] wip volumes
-  - [ ] is it OK to expose ~/.ssh to the container? perhaps not if you'll have an
-      untrusted agent running there.
-  - [ ] perhaps ./devbox-run.sh should force users to explicitly set `--volume`
-      flags.
-- [ ] docs for running X/Wayland programs
+- [ ] later: docs for running X/Wayland programs
   - [ ] install jetbrains mono nerd font

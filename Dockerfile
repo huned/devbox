@@ -7,12 +7,7 @@ SHELL ["/bin/bash", "-c"]
 RUN \
   echo "ubuntu:ubuntu" | chpasswd
 
-# Install software!
-#
-# We're basing this image on ubuntu and I'm trusting the default apt repos.
-#
-# Unfortunately we're getting a very old podman version this way.
-#
+# Install software
 RUN apt update && apt upgrade -y && \
   export DEBIAN_FRONTEND="noninteractive" && \
   export TZ="America/Chicago" && \
@@ -76,16 +71,15 @@ RUN apt update && apt upgrade -y && \
 RUN apt-add-repository -y ppa:neovim-ppa/unstable && apt update && \
   apt install -y neovim
 
-#USER $USERNAME
+# Switch to ubuntu user and their home dir
 USER ubuntu
-
 WORKDIR /home/ubuntu
 
 # Suppress sudo warning when starting terminal
 RUN \
   touch ~/.sudo_as_admin_successful
 
-# Install various dotfiles and configurations
+# Install dotfiles
 RUN \
   mkdir -p ~/.config && cd ~/.config && \
   git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
