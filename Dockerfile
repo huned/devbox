@@ -126,4 +126,12 @@ RUN \
   mv bw ~/.local/bin && \
   rm /tmp/bw-linux-2026.6.0.zip
 
+# Generate ssh keypair for github
+# IMPORTANT: add the public key to your github account
+RUN \
+  mkdir -p ~/.ssh && chmod 700 ~/.ssh && \
+  ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519_github -C "devbox+github@devbox.local" && \
+  echo "Host github.com\n\tHostName github.com\n\tUser git\n\tIdentityFile ~/.ssh/id_ed25519_github\n\tIdentitiesOnly yes" > ~/.ssh/config && \
+  chmod 600 ~/.ssh/config
+
 CMD ["/bin/bash"]

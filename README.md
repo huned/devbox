@@ -29,6 +29,12 @@ To detach from the container (while leaving it running): `<ctrl>+p, <ctrl>+q`
 
 Later, re-attach with `podman attach -l` to resume working.
 
+## IMPORTANT NOTES
+
+- During build, the container generates a new keypair for use with github. You
+  must add the container's `~/.ssh/id_ed25519_github.pub` to your github account
+  to use it.
+
 ## TODO
 
 - [ ] bug: why does `--userns keep-id` take forever on run?
