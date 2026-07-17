@@ -79,14 +79,6 @@ WORKDIR /home/ubuntu
 RUN \
   touch ~/.sudo_as_admin_successful
 
-# Install dotfiles
-RUN \
-  mkdir -p ~/.config && cd ~/.config && \
-  git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
-  # Protect against supply chain attack by specifying a known good hash
-  git reset --hard 2e775f8 && \
-  ./install.sh
-
 # deno
 RUN \
   curl -fsSL https://deno.land/install.sh | sh && \
@@ -127,5 +119,13 @@ RUN \
   ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519_github -C "devbox+github@devbox.local" && \
   echo "Host github.com\n\tHostName github.com\n\tUser git\n\tIdentityFile ~/.ssh/id_ed25519_github\n\tIdentitiesOnly yes" > ~/.ssh/config && \
   chmod 600 ~/.ssh/config
+
+# Install dotfiles
+RUN \
+  mkdir -p ~/.config && cd ~/.config && \
+  git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
+  # Protect against supply chain attack by specifying a known good hash
+  git reset --hard 0f4b2d1 && \
+  ./install.sh
 
 CMD ["/bin/bash"]
