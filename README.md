@@ -35,8 +35,19 @@ Later, re-attach with `podman attach -l` to resume working.
   must add the container's `~/.ssh/id_ed25519_github.pub` to your github account
   to use it.
 
+- To avoid slow first-run startup, configure podman to use fuse-overlayfs by
+  creating `~/.config/containers/storage.conf`:
+
+      [storage]
+      driver = "overlay"
+
+      [storage.options.overlay]
+      mount_program = "/usr/bin/fuse-overlayfs"
+
+  Without this, `--userns=keep-id` triggers a slow recursive chown of the
+  container image on first run.
+
 ## TODO
 
-- [ ] bug: why does `--userns keep-id` take forever on run?
 - [ ] later: docs for running X/Wayland programs
   - [ ] install jetbrains mono nerd font
