@@ -7,7 +7,7 @@ A development environment in a podman container. Heavily adapted from
 
 On the host machine:
 
-    # build container
+    # build image
     podman build --tag devbox --format docker .
 
     # edit ./devbox-run.sh to add/update --volume flags
