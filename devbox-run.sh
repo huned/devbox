@@ -6,8 +6,6 @@ podman run \
   --name devbox \
   --env TERM="$TERM" \
   --userns keep-id \
-  --volume ~/.ssh:/home/ubuntu/.ssh:ro \
-  --volume ~/work:/home/ubuntu/work:ro \
   --volume ~/Downloads:/home/ubuntu/Downloads:ro \
   --interactive --tty --detach \
   --replace \
