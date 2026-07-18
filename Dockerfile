@@ -94,20 +94,26 @@ RUN \
   ./install.sh
 
 # deno
+# CAUTION! Note the single quotes in setting up the path. Using double quotes
+# will break because it will interpolate to the host's $PATH env var.
 RUN \
   curl -fsSL https://deno.land/install.sh | sh && \
-  echo "export PATH=~/.deno/bin:$PATH" >> ~/.bashrc
+  echo 'export PATH=~/.deno/bin:$PATH' >> ~/.bashrc
 
 # rust
+# CAUTION! Note the single quotes in setting up the path. Using double quotes
+# will break because it will interpolate to the host's $PATH env var.
 RUN \
   curl https://sh.rustup.rs -sSf | sh -s -- -y && \
-  echo "export PATH=~/.cargo/bin:$PATH" >> ~/.bashrc && \
+  echo 'export PATH=~/.cargo/bin:$PATH' >> ~/.bashrc && \
   echo "source ~/.cargo/env" >> ~/.bashrc
 
 # uv
+# CAUTION! Note the single quotes in setting up the path. Using double quotes
+# will break because it will interpolate to the host's $PATH env var.
 RUN \
   curl -LsSf https://astral.sh/uv/install.sh | sh && \
-  echo "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
+  echo 'export PATH=~/.local/bin:$PATH' >> ~/.bashrc
 
 # opencode
 RUN \
