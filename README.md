@@ -49,5 +49,6 @@ Later, re-attach with `podman attach -l` to resume working.
 
 ## TODO
 
+- [ ] check hashes of stuff I'm installing :(
 - [ ] later: docs for running X/Wayland programs
   - [ ] install jetbrains mono nerd font
