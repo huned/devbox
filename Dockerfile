@@ -71,6 +71,9 @@ RUN apt update && apt upgrade -y && \
 RUN apt-add-repository -y ppa:neovim-ppa/unstable && apt update && \
   apt install -y neovim
 
+# install codegraph
+RUN npm install -g @colbymchenry/codegraph
+
 # Switch to ubuntu user and their home dir
 USER ubuntu
 WORKDIR /home/ubuntu
@@ -106,10 +109,9 @@ RUN \
   curl -LsSf https://astral.sh/uv/install.sh | sh && \
   echo "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 
-# opencode and codegraph
+# opencode
 RUN \
-  curl -fsSL https://opencode.ai/install | bash && \
-  npm install -g @colbymchenry/codegraph
+  curl -fsSL https://opencode.ai/install | bash
 
 # ollama
 #RUN \
