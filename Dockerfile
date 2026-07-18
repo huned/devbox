@@ -90,7 +90,7 @@ RUN \
   mkdir -p ~/.config && cd ~/.config && \
   git clone https://github.com/huned/dotfiles.git && cd dotfiles && \
   # Protect against supply chain attack by specifying a known good hash
-  git reset --hard 0f4b2d1 && \
+  git reset --hard 2174547 && \
   ./install.sh
 
 # deno
