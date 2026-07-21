@@ -14,6 +14,7 @@ RUN apt update && apt upgrade -y && \
   apt install -y \
   bash-completion \
   bat \
+  bsdextrautils \
   btop \
   build-essential \
   bzip2 \
